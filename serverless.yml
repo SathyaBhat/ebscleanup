@@ -1,0 +1,29 @@
+service: ebs-cleanup
+
+app: ebs-cleanup
+org: sathyabhat
+
+provider:
+  name: aws
+  runtime: python3.8
+
+# you can overwrite defaults here
+  stage: prod
+  region: eu-west-1
+
+# you can add statements to the Lambda function's IAM Role here
+  iamRoleStatements:
+   - Effect: "Allow"
+     Action:
+       - "ec2:DescribeVolumes"
+     Resource: '*'
+   - Effect: "Allow"
+     Action:
+       - "ec2:DeleteVolume"
+     Resource: '*'
+
+functions:
+  ebscleanup:
+    handler: handler.run
+    events:
+      - schedule: rate(12 hours)
